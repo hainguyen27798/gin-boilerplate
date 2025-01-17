@@ -7,7 +7,7 @@ GO_TEST_FLAGS := ./... -v
 
 # Macros
 CREATE_BUILD_DIR = @mkdir -p $(BUILD_DIR)
-GO_RUN = go run ./cmd
+GO_RUN = air
 GO_FMT = go fmt ./...
 GO_CLEAN = rm -rf $(BUILD_DIR)
 

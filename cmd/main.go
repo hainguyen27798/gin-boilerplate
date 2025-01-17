@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/hainguyen27798/gin-boilerplate/configs"
+	"github.com/hainguyen27798/gin-boilerplate/global"
 	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
 	"net/http"
 )
@@ -19,7 +19,7 @@ func main() {
 		})
 	})
 
-	err := server.Run(fmt.Sprintf(":%s", configs.AppConfig.Server.Port))
+	err := server.Run(fmt.Sprintf(":%s", global.AppConfig.Server.Port))
 	if err != nil {
 		panic(err)
 	}
