@@ -20,5 +20,6 @@ func main() {
 		})
 	})
 
+	global.Logger.Info("server is running on port " + global.AppConfig.Server.Port)
 	helpers.Must(server.Run(fmt.Sprintf(":%s", global.AppConfig.Server.Port)))
 }
