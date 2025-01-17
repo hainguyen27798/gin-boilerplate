@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hainguyen27798/gin-boilerplate/global"
 	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
+	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 	"net/http"
 )
 
@@ -19,8 +20,5 @@ func main() {
 		})
 	})
 
-	err := server.Run(fmt.Sprintf(":%s", global.AppConfig.Server.Port))
-	if err != nil {
-		panic(err)
-	}
+	helpers.Must(server.Run(fmt.Sprintf(":%s", global.AppConfig.Server.Port)))
 }
