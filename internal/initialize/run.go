@@ -54,7 +54,7 @@ func initServer() {
 	// kill (no param) default send syscall.SIGTERM
 	// kill -2 is syscall.SIGINT
 	// kill -9 is syscall. SIGKILL but can't be caught, so don't need to add it
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	<-quit
 	global.Logger.Info("Shutting down server...")
 
@@ -71,7 +71,6 @@ func initServer() {
 	// catching ctx.Done(). timeout of 5 seconds.
 	select {
 	case <-ctx.Done():
-		global.Logger.Info("timeout of 5 seconds.")
+		global.Logger.Info("Server shutdown")
 	}
-	global.Logger.Info("Server exiting")
 }

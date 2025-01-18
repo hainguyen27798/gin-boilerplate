@@ -22,7 +22,7 @@ run:
 
 # Build the application
 .PHONY: build
-build: $(GO_SOURCE_FILES)
+build: clean $(GO_SOURCE_FILES)
 	$(CREATE_BUILD_DIR)
 	go build -ldflags="-X 'github.com/hainguyen27798/gin-boilerplate/version.Version=v1.0.1' \
                      -X 'github.com/hainguyen27798/gin-boilerplate/version.Commit=$(git rev-parse HEAD)' \
