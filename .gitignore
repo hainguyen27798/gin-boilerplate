@@ -7,8 +7,11 @@
 *.dll
 *.so
 *.dylib
+
+# bundle build and logs
 tmp
 logs
+build
 
 # Test binary, built with `go test -c`
 *.test

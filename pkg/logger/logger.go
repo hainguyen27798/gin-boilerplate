@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -8,13 +9,13 @@ import (
 	"os"
 )
 
-// Zap is a wrapper around zap.Logger that provides structured and leveled logging capabilities.
+// Zap is a wrapper around zap.Logger, providing additional logging functionality and integration capabilities.
 type Zap struct {
 	*zap.Logger
 }
 
-// NewLogger initializes and returns a new Zap logger instance based on the provided LoggerSettings configuration.
-func NewLogger(config setting.LoggerSettings) *Zap {
+// NewLogger creates and returns a new instance of the Zap logger configured with the provided settings and application mode.
+func NewLogger(config setting.LoggerSettings, mode setting.AppMode, version string) *Zap {
 	logLevel := config.Level
 	var level zapcore.Level
 	switch logLevel {
@@ -34,11 +35,11 @@ func NewLogger(config setting.LoggerSettings) *Zap {
 	core := zapcore.NewCore(encoder, sync, level)
 
 	return &Zap{
-		zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel)),
+		zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel)).Named(fmt.Sprintf("[%s-%s]", mode, version)),
 	}
 }
 
-// getEncodeLog initializes and returns a JSON encoder for structured logging with custom time, level, and caller encodings.
+// getEncodeLog returns a zapcore.Encoder configured with a console encoder and custom timestamp, level, and caller formatting.
 func getEncodeLog() zapcore.Encoder {
 	encoderConfig := zap.NewProductionEncoderConfig()
 
@@ -53,10 +54,10 @@ func getEncodeLog() zapcore.Encoder {
 
 	// "caller": "cli/main.log.go:3"
 	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
-	return zapcore.NewJSONEncoder(encoderConfig)
+	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-// getWriteSync creates a WriteSyncer that writes logs to both a file and the console based on the provided configuration.
+// getWriteSync creates a zapcore.WriteSyncer that combines console output and file output based on the provided configuration.
 func getWriteSync(config setting.LoggerSettings) zapcore.WriteSyncer {
 	hook := lumberjack.Logger{
 		Filename:   config.FileName,

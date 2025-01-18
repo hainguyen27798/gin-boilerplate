@@ -24,7 +24,9 @@ run:
 .PHONY: build
 build: $(GO_SOURCE_FILES)
 	$(CREATE_BUILD_DIR)
-	go build -o $(BUILD_DIR)/$(APP_NAME) .
+	go build -ldflags="-X 'github.com/hainguyen27798/gin-boilerplate/version.Version=v1.0.1' \
+                     -X 'github.com/hainguyen27798/gin-boilerplate/version.Commit=$(git rev-parse HEAD)' \
+                     -X 'github.com/hainguyen27798/gin-boilerplate/version.BuildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)'" -o $(BUILD_DIR)/$(APP_NAME) ./cmd
 
 # Test the application
 .PHONY: test

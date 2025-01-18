@@ -1,2 +1,14 @@
-# gin-boilerplate
-The quickest method to deploy a RESTful API using the Gin framework, with a well-structured project setup that includes MongoDB as the default database and JWT authentication middleware, with token storage in Redis.
+# Gin RESTful API Boilerplate
+
+A starter template for building RESTful APIs using the Gin framework. This boilerplate includes:
+
+- A well-organized project structure.
+- MongoDB as the default database.
+- JWT authentication middleware.
+- Token storage implemented with Redis.
+
+#### Tail log with json format:
+
+```bash
+  tail -f ./logs/dev.001.log | jq
+```
