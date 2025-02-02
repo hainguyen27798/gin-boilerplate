@@ -1,7 +1,7 @@
-package version
+package metadata
 
 var (
-	Version   = "v1.0.0"  // Default version, overridden at build time
+	Version   = "v-local" // Default version, overridden at build time
 	Commit    = "unknown" // Git commit hash
 	BuildDate = "unknown" // Build date
 )

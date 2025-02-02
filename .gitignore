@@ -30,3 +30,4 @@ go.work.sum
 # env file
 configs/*.yaml
 !configs/example-env.yaml
+.env
