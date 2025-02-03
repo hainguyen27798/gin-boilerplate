@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 type Server struct {
@@ -56,7 +55,7 @@ func (s *Server) Run(port string) {
 	}()
 }
 
-func (s *Server) Stop() {
+func (s *Server) Stop(ctx context.Context) {
 	// Wait for interrupt signal to gracefully shut down the server with
 	// a timeout of 5 seconds.
 	quit := make(chan os.Signal, 1)
@@ -68,17 +67,9 @@ func (s *Server) Stop() {
 	<-quit
 	global.Logger.Info("Shutting down server...")
 
-	// Create a context with timeout for graceful shutdown
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
 	// Attempt to shut down the server gracefully
 	if err := s.s.Shutdown(ctx); err != nil {
 		global.Logger.Fatal("Server forced to shut down: \n" + err.Error())
 		panic(err)
 	}
-
-	// catching ctx.Done(). timeout of 5 seconds.
-	<-ctx.Done()
-	global.Logger.Info("Server shutdown")
 }

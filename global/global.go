@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/hainguyen27798/gin-boilerplate/internal/database"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/logger"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 )
@@ -12,4 +13,5 @@ var (
 	AppConfig setting.Config
 	AppMode   setting.AppMode
 	Logger    *logger.Zap
+	MongoDB   *database.MongoDBStrategy
 )

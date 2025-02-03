@@ -7,3 +7,12 @@ logger_config:
   max_backups: 3
   max_age: 28
   compress: true
+mongo_config:
+  host: localhost
+  port: 27017
+  username: root
+  password: root
+  database: gin_test
+  max_pool_size: 150
+  enable_log: true
+  direct_connection: true

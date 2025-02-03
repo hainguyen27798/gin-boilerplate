@@ -2,7 +2,6 @@ package initialize
 
 import (
 	"github.com/hainguyen27798/gin-boilerplate/global"
-	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	"github.com/spf13/viper"
 	"os"
@@ -28,8 +27,12 @@ func LoadConfig() {
 	viper.AutomaticEnv()
 
 	// reading config
-	helpers.Must(viper.ReadInConfig())
+	if err := viper.ReadInConfig(); err != nil {
+		panic(err)
+	}
 
 	// Mapping config to global.AppConfig
-	helpers.Must(viper.Unmarshal(&global.AppConfig))
+	if err := viper.Unmarshal(&global.AppConfig); err != nil {
+		panic(err)
+	}
 }

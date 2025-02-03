@@ -2,8 +2,9 @@ package setting
 
 // Config represents the application's configuration structure for server settings.
 type Config struct {
-	Server ServerSettings `mapstructure:"server_config"`
-	Logger LoggerSettings `mapstructure:"logger_config"`
+	Server  ServerSettings  `mapstructure:"server_config"`
+	Logger  LoggerSettings  `mapstructure:"logger_config"`
+	MongoDB MongoDBSettings `mapstructure:"mongo_config"`
 }
 
 // ServerSettings defines the configuration settings for a server, including the port it operates on.
@@ -19,4 +20,16 @@ type LoggerSettings struct {
 	MaxBackups int    `mapstructure:"max_backups"`
 	MaxAge     int    `mapstructure:"max_age"`
 	Compress   bool   `mapstructure:"compress"`
+}
+
+// MongoDBSettings defines the configuration settings for mongoDB
+type MongoDBSettings struct {
+	Host             string `mapstructure:"host"`
+	Port             string `mapstructure:"port"`
+	Username         string `mapstructure:"username"`
+	Password         string `mapstructure:"password"`
+	Database         string `mapstructure:"database"`
+	MaxPoolSize      uint64 `mapstructure:"max_pool_size"`
+	EnableLog        bool   `mapstructure:"enable_log"`
+	DirectConnection bool   `mapstructure:"direct_connection"`
 }
