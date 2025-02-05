@@ -5,12 +5,32 @@ run:
 linters:
   disable-all: true
   enable:
-    - errcheck    # Check for unchecked errors
-    - gosimple    # Detect simplifications in Go code
-    - govet       # Report suspicious constructs
-    - staticcheck # Go static analysis
-    - unused      # Check for unused code
-    - revive      # Enhanced linting tool
+    - errcheck      # Check for unchecked errors
+    - gosimple      # Detect simplifications in Go code
+    - govet         # Report suspicious constructs
+    - ineffassign   # Detect ineffectual assignments
+    - staticcheck   # Go static analysis
+    - typecheck     # Type checking for Go code
+    - unused        # Check for unused code
+    - revive        # Enhanced linting tool
+    - gocyclo       # Calculate cyclomatic complexity
+    - goconst       # Find repeated strings that could be replaced by a constant
+    - gofmt         # Gofmt formats Go code
+    - gofumpt       # Go fmt for humans
+    - goimports     # Goimports does everything that gofmt does. And more.
+    - misspell      # Correct commonly misspelled words
+    - unconvert     # Detect conversions that can be replaced by type assertions
+    - unparam       # Find unused funcs, vars, and consts
+    - bodyclose     # Check HTTP response bodies are closed
+    - dupl          # Find code that is identical or duplicate
+    - nakedret      # Detect naked returns
+    - tparallel     # Detect inappropriate parallelism
+    - lll           # Report long lines
+
+linters-settings:
+  lll:
+    line-length: 100
+    tab-width: 2
 
 issues:
   exclude-rules:
@@ -21,4 +41,6 @@ issues:
   max-same-issues: 3
 
 output:
-  formats: colored-line-number
+  formats:
+    - format: colored-line-number
+      path: stdout

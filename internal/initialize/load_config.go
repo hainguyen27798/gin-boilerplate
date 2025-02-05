@@ -1,13 +1,15 @@
 package initialize
 
 import (
+	"os"
+
 	"github.com/hainguyen27798/gin-boilerplate/global"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	"github.com/spf13/viper"
-	"os"
 )
 
-// LoadConfig initializes and reads the application configuration using the viper library and unmarshals it into AppConfig.
+// LoadConfig initializes and reads the application configuration using
+// the viper library and unmarshals it into AppConfig.
 func LoadConfig() {
 	mode := os.Getenv("MODE")
 
@@ -15,7 +17,6 @@ func LoadConfig() {
 	switch setting.AppMode(mode) {
 	case setting.DevMode, setting.ProdMode:
 		global.AppMode = setting.AppMode(mode)
-		break
 	default:
 		global.AppMode = setting.DevMode
 	}

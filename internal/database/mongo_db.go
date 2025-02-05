@@ -3,11 +3,12 @@ package database
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"go.mongodb.org/mongo-driver/v2/event"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
-	"log"
-	"time"
 )
 
 type MongoDBOptions struct {
@@ -68,34 +69,36 @@ const (
 
 func getLogMonitor() *event.CommandMonitor {
 	return &event.CommandMonitor{
-		Started: func(ctx context.Context, evt *event.CommandStartedEvent) {
-			// Format:
-			// [MONGO][STARTED] Command: <command_name> | DB: <database> | RequestID: <id> | Cmd: <command document>
-			log.Println(fmt.Sprintf("%s[MONGO][STARTED]%s Command: %s%s%s | DB: %s%s%s | RequestID: %s%d%s | Cmd: %v",
+		Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+			// Format: [MONGO][STARTED] Command: <command_name> | DB: <database> |
+			// RequestID: <id> | Cmd: <command document>
+			log.Printf("%s[MONGO][STARTED]%s Command: %s%s%s | DB: %s%s%s | RequestID: %s%d%s | Cmd: %v",
 				colorBlue, colorReset,
 				colorYellow, evt.CommandName, colorReset,
 				colorYellow, evt.DatabaseName, colorReset,
 				colorYellow, evt.RequestID, colorReset,
-				evt.Command))
+				evt.Command)
 		},
-		Succeeded: func(ctx context.Context, evt *event.CommandSucceededEvent) {
+		Succeeded: func(_ context.Context, evt *event.CommandSucceededEvent) {
 			// Format:
 			// [MONGO][SUCCEEDED] Command: <command_name> | RequestID: <id> | Duration: <duration>
-			log.Println(fmt.Sprintf("%s[MONGO][SUCCEEDED]%s Command: %s%s%s | RequestID: %s%d%s | Duration: %s%v%s",
+			log.Printf("%s[MONGO][SUCCEEDED]%s Command: %s%s%s | RequestID: %s%d%s | Duration: %s%v%s",
 				colorGreen, colorReset,
 				colorYellow, evt.CommandName, colorReset,
 				colorYellow, evt.RequestID, colorReset,
-				colorYellow, evt.Duration, colorReset))
+				colorYellow, evt.Duration, colorReset)
 		},
-		Failed: func(ctx context.Context, evt *event.CommandFailedEvent) {
-			// Format:
-			// [MONGO][FAILED] Command: <command_name> | RequestID: <id> | Duration: <duration> | Error: <error>
-			log.Println(fmt.Sprintf("%s[MONGO][FAILED]%s Command: %s%s%s | RequestID: %s%d%s | Duration: %s%v%s | Error: %s%v%s",
+		Failed: func(_ context.Context, evt *event.CommandFailedEvent) {
+			// Format: [MONGO][FAILED] Command: <command_name> | RequestID: <id> | Duration:
+			// <duration> | Error: <error>
+			log.Printf(
+				"%s[MONGO][FAILED]%s Command: %s%s%s | "+
+					"RequestID: %s%d%s | Duration: %s%v%s | Error: %s%v%s",
 				colorRed, colorReset,
 				colorYellow, evt.CommandName, colorReset,
 				colorYellow, evt.RequestID, colorReset,
 				colorYellow, evt.Duration, colorReset,
-				colorYellow, evt.Failure, colorReset))
+				colorYellow, evt.Failure, colorReset)
 		},
 	}
 }

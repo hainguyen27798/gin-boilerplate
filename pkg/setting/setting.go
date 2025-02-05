@@ -7,7 +7,8 @@ type Config struct {
 	MongoDB MongoDBSettings `mapstructure:"mongo_config"`
 }
 
-// ServerSettings defines the configuration settings for a server, including the port it operates on.
+// ServerSettings defines the configuration settings for a server,
+// including the port it operates on.
 type ServerSettings struct {
 	Port string `mapstructure:"port"`
 }

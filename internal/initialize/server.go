@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/hainguyen27798/gin-boilerplate/global"
-	"github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/gin-gonic/gin"
+	"github.com/hainguyen27798/gin-boilerplate/global"
+	"github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 )
 
 type Server struct {

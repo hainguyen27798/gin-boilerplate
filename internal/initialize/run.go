@@ -2,14 +2,17 @@ package initialize
 
 import (
 	"context"
-	"github.com/hainguyen27798/gin-boilerplate/global"
 	"time"
+
+	"github.com/hainguyen27798/gin-boilerplate/global"
 )
 
 func Run() {
 	LoadConfig()
 	InitLogger()
 	InitDatabase()
+
+	RegisterValidations()
 
 	s := InitServer()
 
