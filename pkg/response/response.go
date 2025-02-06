@@ -100,7 +100,7 @@ func ValidateErrorResponse(c *gin.Context, err error) {
 // - Codes in the range [40000, 50000] map to http.StatusBadRequest
 // - All other codes map to http.StatusInternalServerError
 func getHTTPCode(code int) int {
-	switch true {
+	switch {
 	case code >= 20000 && code < 20100:
 		return http.StatusOK
 	case code >= 20100 && code < 20200:

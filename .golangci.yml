@@ -26,6 +26,7 @@ linters:
     - nakedret      # Detect naked returns
     - tparallel     # Detect inappropriate parallelism
     - lll           # Report long lines
+    - gocritic      # Various linters
 
 linters-settings:
   lll:
