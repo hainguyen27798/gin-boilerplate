@@ -54,7 +54,12 @@ func (m *MongoDBStrategy) Connect(connString string, opts DBOptions) (DBConnecti
 	return m, nil
 }
 
+// Disconnect closes the connection to the MongoDB client.
+// If the client is nil, it returns an error.
 func (m *MongoDBStrategy) Disconnect(ctx context.Context) error {
+	if m.Client == nil {
+		return fmt.Errorf("client is nil")
+	}
 	return m.Client.Disconnect(ctx)
 }
 

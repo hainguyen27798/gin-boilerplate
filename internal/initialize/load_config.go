@@ -10,7 +10,7 @@ import (
 
 // LoadConfig initializes and reads the application configuration using
 // the viper library and unmarshals it into AppConfig.
-func LoadConfig() {
+func LoadConfig(path string) {
 	mode := os.Getenv("MODE")
 
 	// Set App Mode
@@ -21,7 +21,7 @@ func LoadConfig() {
 		global.AppMode = setting.DevMode
 	}
 
-	viper.AddConfigPath("./configs/")
+	viper.AddConfigPath(path)
 	viper.SetConfigName(string(global.AppMode))
 	viper.SetConfigType("yaml")
 

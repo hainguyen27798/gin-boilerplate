@@ -8,7 +8,7 @@ import (
 )
 
 func Run() {
-	LoadConfig()
+	LoadConfig("./configs/")
 	InitLogger()
 	InitDatabase()
 
