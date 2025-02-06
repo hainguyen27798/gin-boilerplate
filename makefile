@@ -37,6 +37,7 @@ build: clean $(GO_SOURCE_FILES) increment-version
 # Test the application
 .PHONY: test
 test:
+	go clean -testcache && \
 	go test $(GO_TEST_FLAGS)
 
 # Format the code

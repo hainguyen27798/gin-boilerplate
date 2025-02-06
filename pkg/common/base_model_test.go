@@ -1,6 +1,7 @@
 package common
 
 import (
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"testing"
 	"time"
 
@@ -8,6 +9,8 @@ import (
 )
 
 func TestBaseModel_BeforeCreate(t *testing.T) {
+	existingID := bson.NewObjectID()
+
 	t.Run("should set ID and timestamps when empty", func(t *testing.T) {
 		model := &BaseModel{}
 		model.BeforeCreate()
@@ -20,7 +23,6 @@ func TestBaseModel_BeforeCreate(t *testing.T) {
 	})
 
 	t.Run("should preserve existing ID and CreatedAt", func(t *testing.T) {
-		existingID := "existing-id"
 		existingTime := time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
 
 		model := &BaseModel{
@@ -39,7 +41,7 @@ func TestBaseModel_BeforeCreate(t *testing.T) {
 func TestBaseModel_BeforeUpdate(t *testing.T) {
 	t.Run("should update UpdatedAt timestamp", func(t *testing.T) {
 		model := &BaseModel{
-			ID:        "test-id",
+			ID:        bson.NewObjectID(),
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
 		}
@@ -53,7 +55,7 @@ func TestBaseModel_BeforeUpdate(t *testing.T) {
 	})
 
 	t.Run("should preserve other fields", func(t *testing.T) {
-		originalID := "test-id"
+		originalID := bson.NewObjectID()
 		originalCreatedAt := time.Now().Add(-24 * time.Hour)
 
 		model := &BaseModel{
@@ -63,7 +65,7 @@ func TestBaseModel_BeforeUpdate(t *testing.T) {
 
 		model.BeforeUpdate()
 
-		assert.Equal(t, originalID, model.ID)
+		assert.Equal(t, originalID.Hex(), model.ID.Hex())
 		assert.Equal(t, originalCreatedAt, model.CreatedAt)
 	})
 }
