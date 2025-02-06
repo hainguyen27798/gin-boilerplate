@@ -14,9 +14,9 @@ type CreateUserDto struct {
 // UpdateUserDto is used for updating an existing user.
 type UpdateUserDto struct {
 	common.BaseDto `bson:",inline"`
-	FirstName      string `json:"first_name,omitempty"`
-	LastName       string `json:"last_name,omitempty"`
-	Image          string `json:"image,omitempty"`
+	FirstName      string `json:"first_name,omitempty" bson:"first_name,omitempty"`
+	LastName       string `json:"last_name,omitempty" bson:"last_name,omitempty"`
+	Image          string `json:"image,omitempty" bson:"image,omitempty"`
 }
 
 // UserDto is used for retrieving user information, excluding the password.
