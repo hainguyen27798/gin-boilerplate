@@ -1,11 +1,11 @@
 package initialize
 
 import (
-	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 	"os"
 	"testing"
 
 	"github.com/hainguyen27798/gin-boilerplate/global"
+	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	"github.com/stretchr/testify/assert"
 )

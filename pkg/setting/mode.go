@@ -1,12 +1,10 @@
 package setting
 
-// AppMode defines the mode in which the application is running,
-// such as "dev" for development or "prod" for production.
+// AppMode represents the application mode, which can be one of "prod", "dev", or "test".
 type AppMode string
 
-// ProdMode represents the application mode for production environments.
-// DevMode represents the application mode for development environments.
 const (
 	ProdMode AppMode = "prod"
 	DevMode  AppMode = "dev"
+	TestMode AppMode = "test"
 )

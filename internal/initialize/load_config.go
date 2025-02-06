@@ -15,7 +15,7 @@ func LoadConfig(path string) {
 
 	// Set App Mode
 	switch setting.AppMode(mode) {
-	case setting.DevMode, setting.ProdMode:
+	case setting.DevMode, setting.ProdMode, setting.TestMode:
 		global.AppMode = setting.AppMode(mode)
 	default:
 		global.AppMode = setting.DevMode
