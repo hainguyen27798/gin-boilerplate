@@ -2,17 +2,14 @@ package users
 
 import (
 	"context"
-	"os"
-	"testing"
-	"time"
-
-	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/v2/bson"
-
 	"github.com/hainguyen27798/gin-boilerplate/global"
 	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/common"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
+	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"os"
+	"testing"
 )
 
 func TestUserRepository_Integration(t *testing.T) {
@@ -46,12 +43,10 @@ func TestUserRepository_Integration(t *testing.T) {
 	}
 
 	// Prepare a test user.
-	now := time.Now()
+	hexId, _ := bson.ObjectIDFromHex("67a4f57c39b9abb0dbabd5b0")
 	user := &UserModel{
 		BaseModel: common.BaseModel{
-			ID:        bson.NewObjectID(),
-			CreatedAt: now,
-			UpdatedAt: now,
+			ID: hexId,
 		},
 		Email:     "test@example.com",
 		FirstName: "John",
@@ -87,7 +82,6 @@ func TestUserRepository_Integration(t *testing.T) {
 				"$set",
 				bson.D{
 					{"first_name", firstName},
-					{"updated_at", time.Now()},
 				},
 			},
 		})

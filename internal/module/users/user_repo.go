@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"time"
 
 	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 
@@ -32,6 +33,7 @@ func NewUserRepository(db *mongo.Database) UserRepository {
 
 // Create inserts a new user into the database
 func (r *userRepositoryImpl) Create(ctx context.Context, user *UserModel) error {
+	user.BeforeCreate()
 	_, err := r.model.InsertOne(ctx, user)
 	return err
 }
@@ -60,6 +62,15 @@ func (r *userRepositoryImpl) FindByID(ctx context.Context, id string) (*UserMode
 // Update updates an existing user in the database
 func (r *userRepositoryImpl) Update(ctx context.Context, id string, payload bson.D) error {
 	_id := helpers.MustValue(bson.ObjectIDFromHex(id))
+
+	// Append "updated_at" field to the payload.
+	payload = append(payload, bson.E{
+		Key: "$set",
+		Value: bson.D{
+			{Key: "updated_at", Value: time.Now()},
+		},
+	})
+
 	_, err := r.model.UpdateOne(ctx, bson.M{"_id": _id}, payload)
 	return err
 }
