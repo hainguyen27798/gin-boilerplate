@@ -65,6 +65,10 @@ deps:
 .PHONY: ci
 ci: fmt lint test build
 
+# Generate wire dependencies
+wire:
+	cd internal/wires && wire
+
 .PHONY: increment-version
 increment-version:
 	@if [ ! -f $(GO_VERSION_FILE) ]; then \
