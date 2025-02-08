@@ -32,10 +32,10 @@ func (dto *UpdateUserDto) Validate() error {
 
 // UserDto is used for retrieving user information, excluding the password.
 type UserDto struct {
-	ID        string `json:"id"`
-	Email     string `json:"email"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Image     string `json:"image"`
-	Verified  bool   `json:"verified"`
+	common.BaseDto `json:",inline"`
+	Email          string `json:"email"`
+	FirstName      string `json:"first_name"`
+	LastName       string `json:"last_name"`
+	Image          string `json:"image"`
+	Verified       bool   `json:"verified"`
 }

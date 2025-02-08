@@ -24,7 +24,11 @@ func (UserModel) CollectionName() string {
 // ToDto returns the name of the MongoDB collection for this model.
 func (user UserModel) ToDto() *UserDto {
 	return &UserDto{
-		ID:        user.ID.Hex(),
+		BaseDto: common.BaseDto{
+			ID:        user.ID.Hex(),
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+		},
 		Email:     user.Email,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,

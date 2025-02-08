@@ -42,6 +42,8 @@ func TestUserModel_ToDto(t *testing.T) {
 		assert.Equal(t, user.LastName, dto.LastName)
 		assert.Equal(t, user.Image, dto.Image)
 		assert.Equal(t, user.Verified, dto.Verified)
+		assert.Equal(t, user.CreatedAt, dto.CreatedAt)
+		assert.Equal(t, user.UpdatedAt, dto.UpdatedAt)
 	})
 
 	t.Run("should handle empty fields", func(t *testing.T) {
@@ -58,6 +60,9 @@ func TestUserModel_ToDto(t *testing.T) {
 		assert.Empty(t, dto.FirstName)
 		assert.Empty(t, dto.LastName)
 		assert.Empty(t, dto.Image)
+		assert.Empty(t, dto.Verified)
+		assert.Empty(t, dto.CreatedAt)
+		assert.Empty(t, dto.UpdatedAt)
 		assert.False(t, dto.Verified)
 	})
 

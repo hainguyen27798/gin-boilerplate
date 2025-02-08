@@ -56,8 +56,16 @@ func TestUserRepository_Integration(t *testing.T) {
 	}
 
 	t.Run("Create user", func(t *testing.T) {
-		err := repo.Create(ctx, user)
+		newUser, err := repo.Create(ctx, user)
 		assert.NoError(t, err)
+		assert.NotNil(t, newUser)
+		assert.Equal(t, user.Email, newUser.Email)
+		assert.Equal(t, user.FirstName, newUser.FirstName)
+		assert.Equal(t, user.LastName, newUser.LastName)
+		assert.Equal(t, user.Image, newUser.Image)
+		assert.Equal(t, user.Password, newUser.Password)
+		assert.NotEmpty(t, newUser.CreatedAt)
+		assert.NotEmpty(t, newUser.UpdatedAt)
 	})
 
 	t.Run("Find user by email", func(t *testing.T) {
@@ -77,7 +85,7 @@ func TestUserRepository_Integration(t *testing.T) {
 		firstName := "Jane"
 
 		// Update timestamp.
-		err := repo.Update(ctx, user.ID.Hex(), bson.D{
+		userUpdated, err := repo.Update(ctx, user.ID.Hex(), bson.D{
 			{
 				"$set",
 				bson.D{
@@ -86,10 +94,9 @@ func TestUserRepository_Integration(t *testing.T) {
 			},
 		})
 		assert.NoError(t, err)
-
-		updated, err := repo.FindByID(ctx, user.ID.Hex())
-		assert.NoError(t, err)
+		updated := userUpdated.ToDto()
 		assert.Equal(t, firstName, updated.FirstName)
+		assert.NotEmpty(t, updated.UpdatedAt)
 	})
 
 	t.Run("Delete user", func(t *testing.T) {

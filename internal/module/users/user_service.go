@@ -4,19 +4,17 @@ import (
 	"context"
 	"crypto/rand"
 
-	"go.mongodb.org/mongo-driver/v2/bson"
-
 	"github.com/hainguyen27798/gin-boilerplate/pkg/common"
-
 	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // UserService defines the interface for user-related operations.
 type UserService interface {
-	CreateUser(ctx context.Context, user *CreateUserDto) error
+	CreateUser(ctx context.Context, user *CreateUserDto) (*UserDto, error)
 	GetUserByEmail(ctx context.Context, email string) (*UserDto, error)
 	GetUserByID(ctx context.Context, id string) (*UserDto, error)
-	UpdateUser(ctx context.Context, id string, user *UpdateUserDto) error
+	UpdateUser(ctx context.Context, id string, user *UpdateUserDto) (*UserDto, error)
 	DeleteUser(ctx context.Context, id string) error
 }
 
@@ -33,11 +31,11 @@ func NewUserService(repo UserRepository) UserService {
 }
 
 // CreateUser creates a new user with validation and additional processing
-func (s *userServiceImpl) CreateUser(ctx context.Context, user *CreateUserDto) error {
+func (s *userServiceImpl) CreateUser(ctx context.Context, user *CreateUserDto) (*UserDto, error) {
 	// Hash password before storing
 	passwordHashed, err := helpers.HashPassword(user.Password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	newUser := &UserModel{
@@ -51,7 +49,12 @@ func (s *userServiceImpl) CreateUser(ctx context.Context, user *CreateUserDto) e
 	}
 
 	// Create user in repository
-	return s.repo.Create(ctx, newUser)
+	userCreated, err := s.repo.Create(ctx, newUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return userCreated.ToDto(), err
 }
 
 // GetUserByEmail retrieves a user by their email address
@@ -73,16 +76,25 @@ func (s *userServiceImpl) GetUserByID(ctx context.Context, id string) (*UserDto,
 }
 
 // UpdateUser updates an existing user
-func (s *userServiceImpl) UpdateUser(ctx context.Context, id string, user *UpdateUserDto) error {
+func (s *userServiceImpl) UpdateUser(
+	ctx context.Context, id string,
+	user *UpdateUserDto,
+) (*UserDto, error) {
 	// Find the user by ID
 	_, err := s.repo.FindByID(ctx, id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Update user in repository
 	newDoc := helpers.MustValue(common.ToBson(user))
-	return s.repo.Update(ctx, id, bson.D{{Key: "$set", Value: newDoc}})
+
+	userUpdated, err := s.repo.Update(ctx, id, bson.D{{Key: "$set", Value: newDoc}})
+	if err != nil {
+		return nil, err
+	}
+
+	return userUpdated.ToDto(), nil
 }
 
 // DeleteUser deletes a user by their ID

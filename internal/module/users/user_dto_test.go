@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
+	"github.com/hainguyen27798/gin-boilerplate/pkg/common"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -94,7 +95,9 @@ func TestUpdateUserDto(t *testing.T) {
 func TestUserDto(t *testing.T) {
 	t.Run("should contain all required fields", func(t *testing.T) {
 		dto := UserDto{
-			ID:        "123",
+			BaseDto: common.BaseDto{
+				ID: "123",
+			},
 			Email:     "test@example.com",
 			FirstName: "John",
 			LastName:  "Doe",

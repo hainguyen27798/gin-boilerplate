@@ -53,8 +53,15 @@ func TestUserService_Integration(t *testing.T) {
 	var createdUserID string
 
 	t.Run("Create user", func(t *testing.T) {
-		err := service.CreateUser(ctx, createDTO)
+		newUser, err := service.CreateUser(ctx, createDTO)
 		assert.NoError(t, err)
+		assert.NotNil(t, newUser)
+		assert.Equal(t, createDTO.Email, newUser.Email)
+		assert.Equal(t, createDTO.FirstName, newUser.FirstName)
+		assert.Equal(t, createDTO.LastName, newUser.LastName)
+		assert.NotEmpty(t, newUser.CreatedAt)
+		assert.NotEmpty(t, newUser.UpdatedAt)
+		assert.Equal(t, newUser.CreatedAt, newUser.UpdatedAt)
 	})
 
 	t.Run("Get user by email", func(t *testing.T) {
@@ -63,6 +70,9 @@ func TestUserService_Integration(t *testing.T) {
 		assert.Equal(t, createDTO.Email, userDto.Email)
 		assert.Equal(t, createDTO.FirstName, userDto.FirstName)
 		assert.Equal(t, createDTO.LastName, userDto.LastName)
+		assert.NotEmpty(t, userDto.CreatedAt)
+		assert.NotEmpty(t, userDto.UpdatedAt)
+		assert.Equal(t, userDto.CreatedAt, userDto.UpdatedAt)
 		createdUserID = userDto.ID
 	})
 
@@ -78,13 +88,12 @@ func TestUserService_Integration(t *testing.T) {
 			FirstName: "Jane",
 		}
 
-		err := service.UpdateUser(ctx, createdUserID, updateDTO)
-		assert.NoError(t, err)
-
-		// Retrieve updated user.
-		userDto, err := service.GetUserByID(ctx, createdUserID)
+		userDto, err := service.UpdateUser(ctx, createdUserID, updateDTO)
 		assert.NoError(t, err)
 		assert.Equal(t, "Jane", userDto.FirstName)
+		assert.NotEmpty(t, userDto.CreatedAt)
+		assert.NotEmpty(t, userDto.UpdatedAt)
+		assert.NotEqual(t, userDto.CreatedAt, userDto.UpdatedAt)
 	})
 
 	t.Run("Delete user", func(t *testing.T) {

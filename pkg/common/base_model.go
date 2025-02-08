@@ -21,7 +21,7 @@ func (m *BaseModel) BeforeCreate() {
 	if m.CreatedAt.IsZero() {
 		m.CreatedAt = time.Now().UTC()
 	}
-	m.UpdatedAt = time.Now().UTC()
+	m.UpdatedAt = m.CreatedAt
 }
 
 // BeforeUpdate updates the modification timestamp
