@@ -27,7 +27,7 @@ type userRepositoryImpl struct {
 // NewUserRepository creates a new instance of UserRepository
 func NewUserRepository(db *mongo.Database) UserRepository {
 	return &userRepositoryImpl{
-		model: db.Collection("users_test"),
+		model: db.Collection(UserModel{}.CollectionName()),
 	}
 }
 
