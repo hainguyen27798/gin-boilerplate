@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/hainguyen27798/gin-boilerplate/internal/routes"
+
 	"github.com/hainguyen27798/gin-boilerplate/global"
 )
 
@@ -15,6 +17,9 @@ func Run() {
 	RegisterValidations()
 
 	s := InitServer()
+
+	// Register routes
+	routes.RegisterRoutes(s.r)
 
 	defer func() {
 		// Create a context with timeout for graceful shutdown
