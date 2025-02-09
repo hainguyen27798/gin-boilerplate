@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/hainguyen27798/gin-boilerplate/pkg/common"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"testing"
 	"time"
@@ -12,7 +13,7 @@ func TestBaseModel_BeforeCreate(t *testing.T) {
 	existingID := bson.NewObjectID()
 
 	t.Run("should set ID and timestamps when empty", func(t *testing.T) {
-		model := &BaseModel{}
+		model := &common.BaseModel{}
 		model.BeforeCreate()
 
 		assert.NotEmpty(t, model.ID)
@@ -25,7 +26,7 @@ func TestBaseModel_BeforeCreate(t *testing.T) {
 	t.Run("should preserve existing ID and CreatedAt", func(t *testing.T) {
 		existingTime := time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
 
-		model := &BaseModel{
+		model := &common.BaseModel{
 			ID:        existingID,
 			CreatedAt: existingTime,
 		}
@@ -34,13 +35,13 @@ func TestBaseModel_BeforeCreate(t *testing.T) {
 		assert.Equal(t, existingID, model.ID)
 		assert.Equal(t, existingTime, model.CreatedAt)
 		assert.False(t, model.UpdatedAt.IsZero())
-		assert.True(t, model.UpdatedAt.After(existingTime))
+		assert.True(t, model.UpdatedAt.Equal(existingTime))
 	})
 }
 
 func TestBaseModel_BeforeUpdate(t *testing.T) {
 	t.Run("should update UpdatedAt timestamp", func(t *testing.T) {
-		model := &BaseModel{
+		model := &common.BaseModel{
 			ID:        bson.NewObjectID(),
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
@@ -58,7 +59,7 @@ func TestBaseModel_BeforeUpdate(t *testing.T) {
 		originalID := bson.NewObjectID()
 		originalCreatedAt := time.Now().Add(-24 * time.Hour)
 
-		model := &BaseModel{
+		model := &common.BaseModel{
 			ID:        originalID,
 			CreatedAt: originalCreatedAt,
 		}

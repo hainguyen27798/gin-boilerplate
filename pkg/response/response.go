@@ -35,7 +35,7 @@ type TErrResponse struct {
 // with an HTTP status code determined by the provided code parameter. The response includes
 // the provided code and the corresponding message from the CodeMsg map.
 func MessageResponse(c *gin.Context, code int) {
-	c.JSON(getHTTPCode(code), TResponse{
+	c.JSON(GetHTTPCode(code), TResponse{
 		Code:    code,
 		Message: CodeMsg[code],
 	})
@@ -93,13 +93,13 @@ func ValidateErrorResponse(c *gin.Context, err error) {
 	})
 }
 
-// getHTTPCode maps a response code to the corresponding HTTP status code.
+// GetHTTPCode maps a response code to the corresponding HTTP status code.
 // It handles the following cases:
 // - Codes in the range [20000, 20100] map to http.StatusOK
 // - Codes in the range [20100, 20200] map to http.StatusOK
 // - Codes in the range [40000, 50000] map to http.StatusBadRequest
 // - All other codes map to http.StatusInternalServerError
-func getHTTPCode(code int) int {
+func GetHTTPCode(code int) int {
 	switch {
 	case code >= 20000 && code < 20100:
 		return http.StatusOK

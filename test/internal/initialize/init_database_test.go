@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"context"
+	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 	"os"
 	"testing"
@@ -18,11 +19,11 @@ func TestInitDatabase(t *testing.T) {
 			helpers.Must(os.Unsetenv("MODE"))
 		}()
 
-		LoadConfig("../../configs/")
-		InitLogger()
+		initialize.LoadConfig("../../../configs/")
+		initialize.InitLogger()
 
 		// Test execution
-		InitDatabase()
+		initialize.InitDatabase()
 
 		defer func() {
 			if global.MongoDB != nil {

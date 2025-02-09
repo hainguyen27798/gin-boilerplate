@@ -2,6 +2,7 @@ package response
 
 import (
 	"errors"
+	response2 "github.com/hainguyen27798/gin-boilerplate/pkg/response"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -17,17 +18,17 @@ func TestMessageResponse(t *testing.T) {
 	c, _ := gin.CreateTestContext(w)
 
 	t.Run("should return correct status code for success range", func(t *testing.T) {
-		MessageResponse(c, CodeSuccess)
+		response2.MessageResponse(c, response2.CodeSuccess)
 		assert.Equal(t, http.StatusOK, w.Code)
-		assert.Contains(t, w.Body.String(), CodeMsg[CodeSuccess])
+		assert.Contains(t, w.Body.String(), response2.CodeMsg[response2.CodeSuccess])
 	})
 
 	t.Run("should return correct status code for error range", func(t *testing.T) {
 		w = httptest.NewRecorder()
 		c, _ = gin.CreateTestContext(w)
-		MessageResponse(c, ErrBadRequest)
+		response2.MessageResponse(c, response2.ErrBadRequest)
 		assert.Equal(t, http.StatusBadRequest, w.Code)
-		assert.Contains(t, w.Body.String(), CodeMsg[ErrBadRequest])
+		assert.Contains(t, w.Body.String(), response2.CodeMsg[response2.ErrBadRequest])
 	})
 }
 
@@ -38,7 +39,7 @@ func TestOkResponse(t *testing.T) {
 
 	t.Run("should include data in response", func(t *testing.T) {
 		testData := map[string]string{"test": "value"}
-		OkResponse(c, CodeSuccess, testData)
+		response2.OkResponse(c, response2.CodeSuccess, testData)
 		assert.Equal(t, http.StatusOK, w.Code)
 		assert.Contains(t, w.Body.String(), `"test":"value"`)
 	})
@@ -51,7 +52,7 @@ func TestCreatedResponse(t *testing.T) {
 
 	t.Run("should return created status with data", func(t *testing.T) {
 		testData := map[string]int{"id": 1}
-		CreatedResponse(c, CreatedSuccess, testData)
+		response2.CreatedResponse(c, response2.CreatedSuccess, testData)
 		assert.Equal(t, http.StatusCreated, w.Code)
 		assert.Contains(t, w.Body.String(), `"id":1`)
 	})
@@ -69,7 +70,7 @@ func TestValidateErrorResponse(t *testing.T) {
 		}
 		var test TestStruct
 		err := validate.Struct(test)
-		ValidateErrorResponse(c, err)
+		response2.ValidateErrorResponse(c, err)
 		assert.Equal(t, http.StatusBadRequest, w.Code)
 		assert.Contains(t, w.Body.String(), "Field Field is required")
 	})
@@ -78,7 +79,7 @@ func TestValidateErrorResponse(t *testing.T) {
 		w = httptest.NewRecorder()
 		c, _ = gin.CreateTestContext(w)
 		err := errors.New("random error")
-		ValidateErrorResponse(c, err)
+		response2.ValidateErrorResponse(c, err)
 		assert.Equal(t, http.StatusBadRequest, w.Code)
 		assert.NotContains(t, w.Body.String(), "random error")
 	})
@@ -100,7 +101,7 @@ func TestGetHTTPCode(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := getHTTPCode(tt.code)
+			result := response2.GetHTTPCode(tt.code)
 			assert.Equal(t, tt.expected, result)
 		})
 	}
@@ -112,8 +113,8 @@ func TestNotFoundException(t *testing.T) {
 	c, _ := gin.CreateTestContext(w)
 
 	t.Run("should return not found status and abort", func(t *testing.T) {
-		NotFoundException(c, ErrNotFound)
+		response2.NotFoundException(c, response2.ErrNotFound)
 		assert.Equal(t, http.StatusNotFound, w.Code)
-		assert.Contains(t, w.Body.String(), CodeMsg[ErrNotFound])
+		assert.Contains(t, w.Body.String(), response2.CodeMsg[response2.ErrNotFound])
 	})
 }

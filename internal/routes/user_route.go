@@ -2,14 +2,11 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hainguyen27798/gin-boilerplate/global"
-	"github.com/hainguyen27798/gin-boilerplate/internal/wires"
+	"github.com/hainguyen27798/gin-boilerplate/internal/module/users"
 )
 
 // RegisterUserRoutes sets up the routes for user-related operations.
-func RegisterUserRoutes(router *gin.Engine) {
-	userController := wires.InitializeUserModule(global.MongoDB.DB)
-
+func RegisterUserRoutes(router *gin.Engine, userController *users.UserController) {
 	// Group user-related routes
 	userRoutes := router.Group("v1/users")
 	{

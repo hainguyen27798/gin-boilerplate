@@ -4,8 +4,10 @@ import (
 	"context"
 	"github.com/hainguyen27798/gin-boilerplate/global"
 	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
+	"github.com/hainguyen27798/gin-boilerplate/internal/module/users"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/common"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
+	"github.com/hainguyen27798/gin-boilerplate/pkg/response"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"os"
@@ -19,7 +21,7 @@ func TestUserRepository_Integration(t *testing.T) {
 		helpers.Must(os.Unsetenv("MODE"))
 	}()
 
-	initialize.LoadConfig("../../../configs/")
+	initialize.LoadConfig("../../../../configs/")
 	initialize.InitLogger()
 
 	ctx := context.Background()
@@ -36,15 +38,15 @@ func TestUserRepository_Integration(t *testing.T) {
 	}()
 
 	// Clean up the users collection to start fresh.
-	repo := NewUserRepository(global.MongoDB.DB)
-	collection := global.MongoDB.DB.Collection(UserModel{}.CollectionName())
+	repo := users.NewUserRepository(global.MongoDB.DB)
+	collection := global.MongoDB.DB.Collection(users.UserModel{}.CollectionName())
 	if err := collection.Drop(ctx); err != nil {
 		assert.NoError(t, err)
 	}
 
 	// Prepare a test user.
 	hexId, _ := bson.ObjectIDFromHex("67a4f57c39b9abb0dbabd5b0")
-	user := &UserModel{
+	user := &users.UserModel{
 		BaseModel: common.BaseModel{
 			ID: hexId,
 		},
@@ -106,5 +108,15 @@ func TestUserRepository_Integration(t *testing.T) {
 		deleted, err := repo.FindByID(ctx, user.ID.Hex())
 		assert.Error(t, err)
 		assert.Nil(t, deleted)
+	})
+
+	t.Run("Delete non-existing user", func(t *testing.T) {
+		err := repo.Delete(ctx, "507f1f77bcf86cd799439011")
+		assert.Equal(t, err.Error(), response.CodeMsg[response.ErrNotFound])
+	})
+
+	t.Run("Delete user with invalid objectID", func(t *testing.T) {
+		err := repo.Delete(ctx, "invalid-object-id")
+		assert.Equal(t, err.Error(), "the provided hex string is not a valid ObjectID")
 	})
 }

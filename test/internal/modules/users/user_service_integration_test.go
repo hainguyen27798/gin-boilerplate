@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"github.com/hainguyen27798/gin-boilerplate/internal/module/users"
 	"os"
 	"testing"
 
@@ -32,17 +33,17 @@ func TestUserService_Integration(t *testing.T) {
 	}()
 
 	// Ensure a clean state.
-	collection := global.MongoDB.DB.Collection(UserModel{}.CollectionName())
+	collection := global.MongoDB.DB.Collection(users.UserModel{}.CollectionName())
 	if err := collection.Drop(ctx); err != nil {
 		assert.NoError(t, err)
 	}
 
 	// Create a new UserService instance using the repository.
-	repo := NewUserRepository(global.MongoDB.DB)
-	service := NewUserService(repo)
+	repo := users.NewUserRepository(global.MongoDB.DB)
+	service := users.NewUserService(repo)
 
 	// Prepare a new user DTO.
-	createDTO := &CreateUserDto{
+	createDTO := &users.CreateUserDto{
 		Email:     "testservice@example.com",
 		FirstName: "John",
 		LastName:  "Doe",
@@ -84,7 +85,7 @@ func TestUserService_Integration(t *testing.T) {
 
 	t.Run("Update user", func(t *testing.T) {
 		// Prepare an update DTO with the modified first name.
-		updateDTO := &UpdateUserDto{
+		updateDTO := &users.UpdateUserDto{
 			FirstName: "Jane",
 		}
 

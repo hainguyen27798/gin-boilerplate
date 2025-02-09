@@ -69,6 +69,10 @@ func getEncodeLog() zapcore.Encoder {
 // getWriteSync creates a zapcore.WriteSyncer that combines console output
 // and file output based on the provided configuration.
 func getWriteSync(config setting.LoggerSettings) zapcore.WriteSyncer {
+	syncConsole := zapcore.AddSync(os.Stdout)
+	if config.FileName == "" {
+		return zapcore.NewMultiWriteSyncer(syncConsole)
+	}
 	hook := lumberjack.Logger{
 		Filename:   config.FileName,
 		MaxSize:    config.MaxSize,
@@ -76,6 +80,5 @@ func getWriteSync(config setting.LoggerSettings) zapcore.WriteSyncer {
 		MaxAge:     config.MaxAge,
 		Compress:   config.Compress,
 	}
-	syncConsole := zapcore.AddSync(os.Stdout)
 	return zapcore.NewMultiWriteSyncer(syncConsole, zapcore.AddSync(&hook))
 }

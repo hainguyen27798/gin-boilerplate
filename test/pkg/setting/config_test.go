@@ -1,6 +1,7 @@
 package setting
 
 import (
+	setting2 "github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -8,7 +9,7 @@ import (
 
 func TestConfig_Structure(t *testing.T) {
 	t.Run("should have all required fields", func(t *testing.T) {
-		config := Config{}
+		config := setting2.Config{}
 		assert.NotNil(t, config.Server)
 		assert.NotNil(t, config.Logger)
 		assert.NotNil(t, config.MongoDB)
@@ -17,19 +18,19 @@ func TestConfig_Structure(t *testing.T) {
 
 func TestServerSettings_Validation(t *testing.T) {
 	t.Run("should handle empty port", func(t *testing.T) {
-		settings := ServerSettings{}
+		settings := setting2.ServerSettings{}
 		assert.Empty(t, settings.Port)
 	})
 
 	t.Run("should store port value", func(t *testing.T) {
-		settings := ServerSettings{Port: "8080"}
+		settings := setting2.ServerSettings{Port: "8080"}
 		assert.Equal(t, "8080", settings.Port)
 	})
 }
 
 func TestLoggerSettings_Validation(t *testing.T) {
 	t.Run("should initialize with zero values", func(t *testing.T) {
-		settings := LoggerSettings{}
+		settings := setting2.LoggerSettings{}
 		assert.Empty(t, settings.FileName)
 		assert.Empty(t, settings.Level)
 		assert.Zero(t, settings.MaxSize)
@@ -39,7 +40,7 @@ func TestLoggerSettings_Validation(t *testing.T) {
 	})
 
 	t.Run("should store all field values", func(t *testing.T) {
-		settings := LoggerSettings{
+		settings := setting2.LoggerSettings{
 			FileName:   "app.log",
 			Level:      "info",
 			MaxSize:    100,
@@ -58,7 +59,7 @@ func TestLoggerSettings_Validation(t *testing.T) {
 
 func TestMongoDBSettings_Validation(t *testing.T) {
 	t.Run("should initialize with zero values", func(t *testing.T) {
-		settings := MongoDBSettings{}
+		settings := setting2.MongoDBSettings{}
 		assert.Empty(t, settings.Host)
 		assert.Empty(t, settings.Port)
 		assert.Empty(t, settings.Username)
@@ -70,7 +71,7 @@ func TestMongoDBSettings_Validation(t *testing.T) {
 	})
 
 	t.Run("should store all field values", func(t *testing.T) {
-		settings := MongoDBSettings{
+		settings := setting2.MongoDBSettings{
 			Host:             "localhost",
 			Port:             "27017",
 			Username:         "admin",

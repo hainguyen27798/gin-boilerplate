@@ -1,6 +1,7 @@
 package validations
 
 import (
+	validations2 "github.com/hainguyen27798/gin-boilerplate/pkg/validations"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
@@ -13,7 +14,7 @@ type TestStruct struct {
 
 func TestStrongPassword(t *testing.T) {
 	validate := validator.New()
-	err := validate.RegisterValidation("strong_password", StrongPassword)
+	err := validate.RegisterValidation("strong_password", validations2.StrongPassword)
 	if err != nil {
 		return
 	}

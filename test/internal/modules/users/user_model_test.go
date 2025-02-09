@@ -1,6 +1,7 @@
 package users
 
 import (
+	"github.com/hainguyen27798/gin-boilerplate/internal/module/users"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"reflect"
 	"testing"
@@ -12,14 +13,14 @@ import (
 
 func TestUserModel_CollectionName(t *testing.T) {
 	t.Run("should return correct collection name", func(t *testing.T) {
-		user := UserModel{}
+		user := users.UserModel{}
 		assert.Equal(t, "users", user.CollectionName())
 	})
 }
 
 func TestUserModel_ToDto(t *testing.T) {
 	t.Run("should convert model to DTO with all fields", func(t *testing.T) {
-		user := UserModel{
+		user := users.UserModel{
 			BaseModel: common.BaseModel{
 				ID:        bson.NewObjectID(),
 				CreatedAt: time.Now(),
@@ -47,7 +48,7 @@ func TestUserModel_ToDto(t *testing.T) {
 	})
 
 	t.Run("should handle empty fields", func(t *testing.T) {
-		user := UserModel{
+		user := users.UserModel{
 			BaseModel: common.BaseModel{
 				ID: bson.NewObjectID(),
 			},
@@ -67,7 +68,7 @@ func TestUserModel_ToDto(t *testing.T) {
 	})
 
 	t.Run("should not expose sensitive fields", func(t *testing.T) {
-		user := UserModel{
+		user := users.UserModel{
 			BaseModel: common.BaseModel{
 				ID: bson.NewObjectID(),
 			},

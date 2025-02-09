@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
+	"github.com/hainguyen27798/gin-boilerplate/internal/module/users"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/common"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -13,7 +14,7 @@ func TestCreateUserDto_Validate(t *testing.T) {
 	initialize.RegisterValidations()
 
 	t.Run("valid user dto", func(t *testing.T) {
-		dto := CreateUserDto{
+		dto := users.CreateUserDto{
 			Email:     "test@example.com",
 			FirstName: "John",
 			LastName:  "Doe",
@@ -26,13 +27,13 @@ func TestCreateUserDto_Validate(t *testing.T) {
 	})
 
 	t.Run("missing required fields", func(t *testing.T) {
-		dto := CreateUserDto{}
+		dto := users.CreateUserDto{}
 		err := dto.Validate()
 		assert.Error(t, err)
 	})
 
 	t.Run("invalid email format", func(t *testing.T) {
-		dto := CreateUserDto{
+		dto := users.CreateUserDto{
 			Email:     "invalid-email",
 			FirstName: "John",
 			LastName:  "Doe",
@@ -47,7 +48,7 @@ func TestCreateUserDto_Validate(t *testing.T) {
 	})
 
 	t.Run("invalid image url", func(t *testing.T) {
-		dto := CreateUserDto{
+		dto := users.CreateUserDto{
 			Email:     "test@example.com",
 			FirstName: "John",
 			LastName:  "Doe",
@@ -63,7 +64,7 @@ func TestCreateUserDto_Validate(t *testing.T) {
 	})
 
 	t.Run("invalid strong password", func(t *testing.T) {
-		dto := CreateUserDto{
+		dto := users.CreateUserDto{
 			Email:     "test@example.com",
 			FirstName: "John",
 			LastName:  "Doe",
@@ -80,8 +81,9 @@ func TestCreateUserDto_Validate(t *testing.T) {
 }
 
 func TestUpdateUserDto(t *testing.T) {
+	initialize.RegisterValidations()
 	t.Run("should allow partial updates", func(t *testing.T) {
-		dto := UpdateUserDto{
+		dto := users.UpdateUserDto{
 			FirstName: "John",
 		}
 		err := dto.Validate()
@@ -94,7 +96,7 @@ func TestUpdateUserDto(t *testing.T) {
 
 func TestUserDto(t *testing.T) {
 	t.Run("should contain all required fields", func(t *testing.T) {
-		dto := UserDto{
+		dto := users.UserDto{
 			BaseDto: common.BaseDto{
 				ID: "123",
 			},

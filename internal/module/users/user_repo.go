@@ -2,7 +2,10 @@ package users
 
 import (
 	"context"
+	"fmt"
 	"time"
+
+	"github.com/hainguyen27798/gin-boilerplate/pkg/response"
 
 	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -95,7 +98,19 @@ func (r *userRepositoryImpl) Update(
 
 // Delete removes a user from the database by their ID
 func (r *userRepositoryImpl) Delete(ctx context.Context, id string) error {
-	_id := helpers.MustValue(bson.ObjectIDFromHex(id))
-	_, err := r.model.DeleteOne(ctx, bson.M{"_id": _id})
-	return err
+	_id, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	res, err := r.model.DeleteOne(ctx, bson.M{"_id": _id})
+	if err != nil {
+		return err
+	}
+
+	if res.DeletedCount == 0 {
+		return fmt.Errorf("%s", response.CodeMsg[response.ErrNotFound])
+	}
+
+	return nil
 }

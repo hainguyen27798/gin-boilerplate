@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/hainguyen27798/gin-boilerplate/internal/module/users"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -17,32 +18,32 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setupTestEnvironment(t *testing.T) *UserController {
+func setupTestEnvironment(t *testing.T) (*users.UserController, users.UserService) {
 	initialize.RegisterValidations()
 	helpers.Must(os.Setenv("MODE", "test"))
 	defer func() {
 		helpers.Must(os.Unsetenv("MODE"))
 	}()
 
-	initialize.LoadConfig("../../../configs/")
+	initialize.LoadConfig("../../../../configs/")
 	initialize.InitLogger()
 	initialize.InitDatabase()
 
-	repo := NewUserRepository(global.MongoDB.DB)
-	userService := NewUserService(repo)
-	userController := NewUserController(userService)
+	repo := users.NewUserRepository(global.MongoDB.DB)
+	userService := users.NewUserService(repo)
+	userController := users.NewUserController(userService)
 
-	collection := global.MongoDB.DB.Collection(UserModel{}.CollectionName())
+	collection := global.MongoDB.DB.Collection(users.UserModel{}.CollectionName())
 	if err := collection.Drop(context.Background()); err != nil {
 		t.Fatal(err)
 	}
 
-	return userController
+	return userController, userService
 }
 
 func TestUserController_CreateUser(t *testing.T) {
 	initialize.RegisterValidations()
-	controller := setupTestEnvironment(t)
+	controller, _ := setupTestEnvironment(t)
 
 	defer func() {
 		if global.MongoDB != nil {
@@ -51,7 +52,7 @@ func TestUserController_CreateUser(t *testing.T) {
 	}()
 
 	t.Run("successful user creation", func(t *testing.T) {
-		userData := CreateUserDto{
+		userData := users.CreateUserDto{
 			FirstName: "John",
 			LastName:  "Doe",
 			Email:     "test@example.com",
@@ -85,7 +86,7 @@ func TestUserController_CreateUser(t *testing.T) {
 	})
 
 	t.Run("invalid user data", func(t *testing.T) {
-		userData := CreateUserDto{
+		userData := users.CreateUserDto{
 			FirstName: "",
 			LastName:  "Doe",
 			Email:     "invalid-email",
@@ -117,17 +118,17 @@ func TestUserController_CreateUser(t *testing.T) {
 }
 
 func TestUserController_GetUserByID(t *testing.T) {
-	controller := setupTestEnvironment(t)
+	controller, service := setupTestEnvironment(t)
 
 	t.Run("get existing user", func(t *testing.T) {
-		userData := CreateUserDto{
+		userData := users.CreateUserDto{
 			FirstName: "John",
 			LastName:  "Doe",
 			Email:     "test@example.com",
 			Password:  "StrongPass123!",
 		}
 		ctx := context.Background()
-		userCreated, err := controller.userService.CreateUser(ctx, &userData)
+		userCreated, err := service.CreateUser(ctx, &userData)
 		assert.NoError(t, err)
 
 		req := httptest.NewRequest(http.MethodGet, "/users/:id", nil)
@@ -172,22 +173,22 @@ func TestUserController_GetUserByID(t *testing.T) {
 }
 
 func TestUserController_UpdateUser(t *testing.T) {
-	controller := setupTestEnvironment(t)
+	controller, service := setupTestEnvironment(t)
 
 	t.Run("successful update", func(t *testing.T) {
 		// Create test user
-		userData := CreateUserDto{
+		userData := users.CreateUserDto{
 			FirstName: "John",
 			LastName:  "Doe",
 			Email:     "test@example.com",
 			Password:  "StrongPass123!",
 		}
 		ctx := context.Background()
-		userCreated, err := controller.userService.CreateUser(ctx, &userData)
+		userCreated, err := service.CreateUser(ctx, &userData)
 		assert.NoError(t, err)
 
 		// Update user
-		updateData := UpdateUserDto{
+		updateData := users.UpdateUserDto{
 			FirstName: "Updated John",
 			LastName:  "Updated Doe",
 		}
@@ -217,17 +218,17 @@ func TestUserController_UpdateUser(t *testing.T) {
 }
 
 func TestUserController_DeleteUser(t *testing.T) {
-	controller := setupTestEnvironment(t)
+	controller, service := setupTestEnvironment(t)
 
 	t.Run("successful deletion", func(t *testing.T) {
-		userData := CreateUserDto{
+		userData := users.CreateUserDto{
 			FirstName: "John",
 			LastName:  "Doe",
 			Email:     "test@example.com",
 			Password:  "StrongPass123!",
 		}
 		ctx := context.Background()
-		userCreated, err := controller.userService.CreateUser(ctx, &userData)
+		userCreated, err := service.CreateUser(ctx, &userData)
 		assert.NoError(t, err)
 
 		req := httptest.NewRequest(http.MethodDelete, "/users/:id", nil)
@@ -249,17 +250,17 @@ func TestUserController_DeleteUser(t *testing.T) {
 }
 
 func TestUserController_GetUserByEmail(t *testing.T) {
-	controller := setupTestEnvironment(t)
+	controller, service := setupTestEnvironment(t)
 
 	t.Run("successful email lookup", func(t *testing.T) {
-		userData := CreateUserDto{
+		userData := users.CreateUserDto{
 			FirstName: "John",
 			LastName:  "Doe",
 			Email:     "test@example.com",
 			Password:  "StrongPass123!",
 		}
 		ctx := context.Background()
-		_, err := controller.userService.CreateUser(ctx, &userData)
+		_, err := service.CreateUser(ctx, &userData)
 		assert.NoError(t, err)
 
 		req := httptest.NewRequest(http.MethodGet, "/users", nil)

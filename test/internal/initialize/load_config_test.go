@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"github.com/hainguyen27798/gin-boilerplate/internal/initialize"
 	"os"
 	"testing"
 
@@ -17,7 +18,7 @@ func TestLoadConfig(t *testing.T) {
 			helpers.Must(os.Unsetenv("MODE"))
 		}()
 
-		LoadConfig("../../configs/")
+		initialize.LoadConfig("../../../configs/")
 
 		assert.Equal(t, setting.DevMode, global.AppMode)
 		assert.NotNil(t, global.AppConfig)
@@ -29,7 +30,7 @@ func TestLoadConfig(t *testing.T) {
 			helpers.Must(os.Unsetenv("MODE"))
 		}()
 
-		LoadConfig("../../configs/")
+		initialize.LoadConfig("../../../configs/")
 
 		assert.Equal(t, setting.ProdMode, global.AppMode)
 		assert.NotNil(t, global.AppConfig)
@@ -41,7 +42,7 @@ func TestLoadConfig(t *testing.T) {
 			helpers.Must(os.Unsetenv("MODE"))
 		}()
 
-		LoadConfig("../../configs/")
+		initialize.LoadConfig("../../../configs/")
 
 		assert.Equal(t, setting.DevMode, global.AppMode)
 		assert.NotNil(t, global.AppConfig)
@@ -50,7 +51,7 @@ func TestLoadConfig(t *testing.T) {
 	t.Run("should default to dev mode when MODE is empty", func(t *testing.T) {
 		helpers.Must(os.Unsetenv("MODE"))
 
-		LoadConfig("../../configs/")
+		initialize.LoadConfig("../../../configs/")
 
 		assert.Equal(t, setting.DevMode, global.AppMode)
 		assert.NotNil(t, global.AppConfig)

@@ -3,7 +3,7 @@ APP_NAME := gin-boilerplate
 BUILD_DIR := build
 GO_SOURCE_FILES := $(shell find . -name '*.go' -not -path "./vendor/*")
 GOLANGCI_LINT_CMD := golangci-lint run
-GO_TEST_FLAGS := ./... -v
+GO_TEST_FLAGS := ./test/...
 GO_MODULE := $(shell grep "^module " go.mod | sed -E 's/module (.*)/\1/')
 GO_VERSION_FILE := ./metadata/version.txt
 
@@ -37,8 +37,7 @@ build: clean $(GO_SOURCE_FILES) increment-version
 # Test the application
 .PHONY: test
 test:
-	go clean -testcache && \
-	go test $(GO_TEST_FLAGS)
+	go clean -testcache && go test $(GO_TEST_FLAGS)
 
 # Format the code
 .PHONY: fmt
