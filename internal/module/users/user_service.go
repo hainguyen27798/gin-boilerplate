@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 
+	"github.com/hainguyen27798/gin-boilerplate/pkg/response"
+
 	"github.com/hainguyen27798/gin-boilerplate/pkg/common"
 	"github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -11,11 +13,11 @@ import (
 
 // UserService defines the interface for user-related operations.
 type UserService interface {
-	CreateUser(ctx context.Context, user *CreateUserDto) (*UserDto, error)
-	GetUserByEmail(ctx context.Context, email string) (*UserDto, error)
-	GetUserByID(ctx context.Context, id string) (*UserDto, error)
-	UpdateUser(ctx context.Context, id string, user *UpdateUserDto) (*UserDto, error)
-	DeleteUser(ctx context.Context, id string) error
+	CreateUser(ctx context.Context, user *CreateUserDto) (*UserDto, *response.Error)
+	GetUserByEmail(ctx context.Context, email string) (*UserDto, *response.Error)
+	GetUserByID(ctx context.Context, id string) (*UserDto, *response.Error)
+	UpdateUser(ctx context.Context, id string, user *UpdateUserDto) (*UserDto, *response.Error)
+	DeleteUser(ctx context.Context, id string) *response.Error
 }
 
 // userServiceImpl is the concrete implementation of UserService
@@ -31,7 +33,10 @@ func NewUserService(repo UserRepository) UserService {
 }
 
 // CreateUser creates a new user with validation and additional processing
-func (s *userServiceImpl) CreateUser(ctx context.Context, user *CreateUserDto) (*UserDto, error) {
+func (s *userServiceImpl) CreateUser(
+	ctx context.Context,
+	user *CreateUserDto,
+) (*UserDto, *response.Error) {
 	// Hash password before storing
 	passwordHashed, err := helpers.HashPassword(user.Password)
 	if err != nil {
@@ -58,7 +63,10 @@ func (s *userServiceImpl) CreateUser(ctx context.Context, user *CreateUserDto) (
 }
 
 // GetUserByEmail retrieves a user by their email address
-func (s *userServiceImpl) GetUserByEmail(ctx context.Context, email string) (*UserDto, error) {
+func (s *userServiceImpl) GetUserByEmail(
+	ctx context.Context,
+	email string,
+) (*UserDto, *response.Error) {
 	user, err := s.repo.FindByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -67,7 +75,7 @@ func (s *userServiceImpl) GetUserByEmail(ctx context.Context, email string) (*Us
 }
 
 // GetUserByID retrieves a user by their ID
-func (s *userServiceImpl) GetUserByID(ctx context.Context, id string) (*UserDto, error) {
+func (s *userServiceImpl) GetUserByID(ctx context.Context, id string) (*UserDto, *response.Error) {
 	user, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -79,7 +87,7 @@ func (s *userServiceImpl) GetUserByID(ctx context.Context, id string) (*UserDto,
 func (s *userServiceImpl) UpdateUser(
 	ctx context.Context, id string,
 	user *UpdateUserDto,
-) (*UserDto, error) {
+) (*UserDto, *response.Error) {
 	// Find the user by ID
 	_, err := s.repo.FindByID(ctx, id)
 	if err != nil {
@@ -98,7 +106,7 @@ func (s *userServiceImpl) UpdateUser(
 }
 
 // DeleteUser deletes a user by their ID
-func (s *userServiceImpl) DeleteUser(ctx context.Context, id string) error {
+func (s *userServiceImpl) DeleteUser(ctx context.Context, id string) *response.Error {
 	return s.repo.Delete(ctx, id)
 }
 

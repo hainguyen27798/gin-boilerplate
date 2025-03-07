@@ -1,9 +1,11 @@
 package helpers
 
+import "log"
+
 // Must panics with the provided error if it is not nil.
 func Must(err error) {
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 }
 

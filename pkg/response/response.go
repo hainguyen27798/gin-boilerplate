@@ -31,85 +31,56 @@ type TErrResponse struct {
 	Errors interface{} `json:"errors"`
 }
 
-// MessageResponse is a helper function that writes a JSON response to the provided gin.Context
-// with an HTTP status code determined by the provided code parameter. The response includes
-// the provided code and the corresponding message from the CodeMsg map.
-func MessageResponse(c *gin.Context, code int) {
-	c.JSON(GetHTTPCode(code), TResponse{
-		Code:    code,
-		Message: CodeMsg[code],
-	})
-}
-
-// NotFoundException is a helper function that writes a JSON response to the provided gin.Context
-// with an HTTP status of http.StatusNotFound. The response includes the provided code and
-// the corresponding message from the CodeMsg map.
-// This function also calls c.Abort() to stop the current request processing.
-func NotFoundException(c *gin.Context, code int) {
-	c.JSON(http.StatusNotFound, TResponse{
-		Code:    code,
-		Message: CodeMsg[code],
-	})
-	c.Abort()
-}
-
 // OkResponse is a helper function that writes a JSON response to the provided gin.Context
-// with an HTTP status of http.StatusOK. The response includes the provided code and
-// the corresponding message from the CodeMsg map, as well as the provided data.
-func OkResponse[T any](c *gin.Context, code int, data T) {
+// with an HTTP status of http.StatusOK. The response includes the provided message and
+// the provided data.
+func OkResponse(c *gin.Context, msg string, data interface{}) {
 	c.JSON(http.StatusOK, TDataResponse{
 		TResponse: TResponse{
-			Code:    code,
-			Message: CodeMsg[code],
+			Code:    http.StatusOK,
+			Message: msg,
 		},
 		Data: data,
 	})
 }
 
 // CreatedResponse is a helper function that writes a JSON response to the provided gin.Context
-// with an HTTP status of http.StatusCreated. The response includes the provided code and
-// the corresponding message from the CodeMsg map, as well as the provided data.
-func CreatedResponse(c *gin.Context, code int, data interface{}) {
+// with an HTTP status of http.StatusCreated. The response includes the provided message and
+// the provided data.
+func CreatedResponse(c *gin.Context, msg string, data interface{}) {
 	c.JSON(http.StatusCreated, TDataResponse{
 		TResponse: TResponse{
-			Code:    code,
-			Message: CodeMsg[code],
+			Code:    http.StatusCreated,
+			Message: msg,
 		},
 		Data: data,
 	})
 }
 
-// ValidateErrorResponse is a helper function that writes a JSON response to the
-// provided gin.Context with an HTTP status of http.StatusBadRequest. The
-// response includes the error code ErrCodeParamInvalid and the validation
-// errors returned by the validationErrorsToJSON function.
-func ValidateErrorResponse(c *gin.Context, err error) {
-	c.JSON(http.StatusBadRequest, TErrResponse{
+// ErrorResponse writes a JSON response to the provided gin.Context with an HTTP status
+// corresponding to the error code. The response includes the error message.
+func ErrorResponse(c *gin.Context, err *Error) {
+	c.JSON(err.Code(), TErrResponse{
 		TResponse: TResponse{
-			Code:    ErrCodeParamInvalid,
-			Message: CodeMsg[ErrCodeParamInvalid],
+			Code:    err.Code(),
+			Message: err.AppErr(),
 		},
-		Errors: validationErrorsToJSON(err),
+		Errors: err.ServiceErr(),
 	})
 }
 
-// GetHTTPCode maps a response code to the corresponding HTTP status code.
-// It handles the following cases:
-// - Codes in the range [20000, 20100] map to http.StatusOK
-// - Codes in the range [20100, 20200] map to http.StatusOK
-// - Codes in the range [40000, 50000] map to http.StatusBadRequest
-// - All other codes map to http.StatusInternalServerError
-func GetHTTPCode(code int) int {
-	switch {
-	case code >= 20000 && code < 20100:
-		return http.StatusOK
-	case code >= 20100 && code < 20200:
-		return http.StatusOK
-	case code >= 40000 && code < 50000:
-		return http.StatusBadRequest
-	default:
-		return http.StatusInternalServerError
-	}
+// ValidateErrorResponse writes a JSON response to the provided gin.Context with an HTTP status
+// corresponding to the error code. The response includes the error message and a list of
+// validation error messages, if any.
+func ValidateErrorResponse(c *gin.Context, err error) {
+	errValidation := NewError(ErrValidation, err)
+	c.JSON(errValidation.Code(), TErrResponse{
+		TResponse: TResponse{
+			Code:    errValidation.Code(),
+			Message: errValidation.Error(),
+		},
+		Errors: validationErrorsToJSON(err),
+	})
 }
 
 // validationErrorsToJSON is a helper function that converts a validator.ValidationErrors
