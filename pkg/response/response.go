@@ -77,7 +77,7 @@ func ValidateErrorResponse(c *gin.Context, err error) {
 	c.JSON(errValidation.Code(), TErrResponse{
 		TResponse: TResponse{
 			Code:    errValidation.Code(),
-			Message: errValidation.Error(),
+			Message: errValidation.AppErr(),
 		},
 		Errors: validationErrorsToJSON(err),
 	})
