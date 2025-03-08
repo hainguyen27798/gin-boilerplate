@@ -2,44 +2,43 @@ package setting
 
 import (
 	setting2 "github.com/hainguyen27798/gin-boilerplate/pkg/setting"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
-func TestConfig_Structure(t *testing.T) {
-	t.Run("should have all required fields", func(t *testing.T) {
+var _ = Describe("TestConfig_Structure", func() {
+	It("should have all required fields", func() {
 		config := setting2.Config{}
-		assert.NotNil(t, config.Server)
-		assert.NotNil(t, config.Logger)
-		assert.NotNil(t, config.MongoDB)
+		Expect(config.Server).NotTo(BeNil())
+		Expect(config.Logger).NotTo(BeNil())
+		Expect(config.MongoDB).NotTo(BeNil())
 	})
-}
+})
 
-func TestServerSettings_Validation(t *testing.T) {
-	t.Run("should handle empty port", func(t *testing.T) {
+var _ = Describe("TestServerSettings_Validation", func() {
+	It("should handle empty port", func() {
 		settings := setting2.ServerSettings{}
-		assert.Empty(t, settings.Port)
+		Expect(settings.Port).To(BeEmpty())
 	})
 
-	t.Run("should store port value", func(t *testing.T) {
+	It("should store port value", func() {
 		settings := setting2.ServerSettings{Port: "8080"}
-		assert.Equal(t, "8080", settings.Port)
+		Expect(settings.Port).To(Equal("8080"))
 	})
-}
+})
 
-func TestLoggerSettings_Validation(t *testing.T) {
-	t.Run("should initialize with zero values", func(t *testing.T) {
+var _ = Describe("TestLoggerSettings_Validation", func() {
+	It("should initialize with zero values", func() {
 		settings := setting2.LoggerSettings{}
-		assert.Empty(t, settings.FileName)
-		assert.Empty(t, settings.Level)
-		assert.Zero(t, settings.MaxSize)
-		assert.Zero(t, settings.MaxBackups)
-		assert.Zero(t, settings.MaxAge)
-		assert.False(t, settings.Compress)
+		Expect(settings.FileName).To(BeEmpty())
+		Expect(settings.Level).To(BeEmpty())
+		Expect(settings.MaxSize).To(BeZero())
+		Expect(settings.MaxBackups).To(BeZero())
+		Expect(settings.MaxAge).To(BeZero())
+		Expect(settings.Compress).To(BeFalse())
 	})
 
-	t.Run("should store all field values", func(t *testing.T) {
+	It("should store all field values", func() {
 		settings := setting2.LoggerSettings{
 			FileName:   "app.log",
 			Level:      "info",
@@ -48,29 +47,29 @@ func TestLoggerSettings_Validation(t *testing.T) {
 			MaxAge:     7,
 			Compress:   true,
 		}
-		assert.Equal(t, "app.log", settings.FileName)
-		assert.Equal(t, "info", settings.Level)
-		assert.Equal(t, 100, settings.MaxSize)
-		assert.Equal(t, 3, settings.MaxBackups)
-		assert.Equal(t, 7, settings.MaxAge)
-		assert.True(t, settings.Compress)
+		Expect(settings.FileName).To(Equal("app.log"))
+		Expect(settings.Level).To(Equal("info"))
+		Expect(settings.MaxSize).To(Equal(100))
+		Expect(settings.MaxBackups).To(Equal(3))
+		Expect(settings.MaxAge).To(Equal(7))
+		Expect(settings.Compress).To(BeTrue())
 	})
-}
+})
 
-func TestMongoDBSettings_Validation(t *testing.T) {
-	t.Run("should initialize with zero values", func(t *testing.T) {
+var _ = Describe("TestMongoDBSettings_Validation", func() {
+	It("should initialize with zero values", func() {
 		settings := setting2.MongoDBSettings{}
-		assert.Empty(t, settings.Host)
-		assert.Empty(t, settings.Port)
-		assert.Empty(t, settings.Username)
-		assert.Empty(t, settings.Password)
-		assert.Empty(t, settings.Database)
-		assert.Zero(t, settings.MaxPoolSize)
-		assert.False(t, settings.EnableLog)
-		assert.False(t, settings.DirectConnection)
+		Expect(settings.Host).To(BeEmpty())
+		Expect(settings.Port).To(BeEmpty())
+		Expect(settings.Username).To(BeEmpty())
+		Expect(settings.Password).To(BeEmpty())
+		Expect(settings.Database).To(BeEmpty())
+		Expect(settings.MaxPoolSize).To(BeZero())
+		Expect(settings.EnableLog).To(BeFalse())
+		Expect(settings.DirectConnection).To(BeFalse())
 	})
 
-	t.Run("should store all field values", func(t *testing.T) {
+	It("should store all field values", func() {
 		settings := setting2.MongoDBSettings{
 			Host:             "localhost",
 			Port:             "27017",
@@ -81,13 +80,13 @@ func TestMongoDBSettings_Validation(t *testing.T) {
 			EnableLog:        true,
 			DirectConnection: true,
 		}
-		assert.Equal(t, "localhost", settings.Host)
-		assert.Equal(t, "27017", settings.Port)
-		assert.Equal(t, "admin", settings.Username)
-		assert.Equal(t, "password", settings.Password)
-		assert.Equal(t, "testdb", settings.Database)
-		assert.Equal(t, uint64(100), settings.MaxPoolSize)
-		assert.True(t, settings.EnableLog)
-		assert.True(t, settings.DirectConnection)
+		Expect(settings.Host).To(Equal("localhost"))
+		Expect(settings.Port).To(Equal("27017"))
+		Expect(settings.Username).To(Equal("admin"))
+		Expect(settings.Password).To(Equal("password"))
+		Expect(settings.Database).To(Equal("testdb"))
+		Expect(settings.MaxPoolSize).To(Equal(uint64(100)))
+		Expect(settings.EnableLog).To(BeTrue())
+		Expect(settings.DirectConnection).To(BeTrue())
 	})
-}
+})

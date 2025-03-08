@@ -1,25 +1,32 @@
 package validations
 
 import (
-	validations2 "github.com/hainguyen27798/gin-boilerplate/pkg/validations"
-	"testing"
-
 	"github.com/go-playground/validator/v10"
-	"github.com/stretchr/testify/assert"
+	validations2 "github.com/hainguyen27798/gin-boilerplate/pkg/validations"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	"testing"
 )
+
+func TestStrongPassword(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Strong Password Suite")
+}
 
 type TestStruct struct {
 	Password string `validate:"strong_password"`
 }
 
-func TestStrongPassword(t *testing.T) {
-	validate := validator.New()
-	err := validate.RegisterValidation("strong_password", validations2.StrongPassword)
-	if err != nil {
-		return
-	}
+var _ = Describe("StrongPassword", func() {
+	var validate *validator.Validate
 
-	t.Run("should accept valid passwords", func(t *testing.T) {
+	BeforeEach(func() {
+		validate = validator.New()
+		err := validate.RegisterValidation("strong_password", validations2.StrongPassword)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	Context("with valid passwords", func() {
 		validPasswords := []string{
 			"Ab@12345",
 			"SecurePass123!",
@@ -27,13 +34,17 @@ func TestStrongPassword(t *testing.T) {
 		}
 
 		for _, password := range validPasswords {
-			test := TestStruct{Password: password}
-			err := validate.Struct(test)
-			assert.NoError(t, err, "Password should be valid: %s", password)
+			// Use a local variable to avoid closure issues
+			pwd := password
+			It("should accept "+pwd, func() {
+				test := TestStruct{Password: pwd}
+				err := validate.Struct(test)
+				Expect(err).NotTo(HaveOccurred(), "Password should be valid: "+pwd)
+			})
 		}
 	})
 
-	t.Run("should reject invalid passwords", func(t *testing.T) {
+	Context("with invalid passwords", func() {
 		invalidPasswords := []string{
 			"",
 			"short",
@@ -46,13 +57,17 @@ func TestStrongPassword(t *testing.T) {
 		}
 
 		for _, password := range invalidPasswords {
-			test := TestStruct{Password: password}
-			err := validate.Struct(test)
-			assert.Error(t, err, "Password should be invalid: %s", password)
+			// Use a local variable to avoid closure issues
+			pwd := password
+			It("should reject "+pwd, func() {
+				test := TestStruct{Password: pwd}
+				err := validate.Struct(test)
+				Expect(err).To(HaveOccurred(), "Password should be invalid: "+pwd)
+			})
 		}
 	})
 
-	t.Run("should handle edge cases", func(t *testing.T) {
+	Context("with edge cases", func() {
 		edgeCases := []struct {
 			password string
 			valid    bool
@@ -68,13 +83,18 @@ func TestStrongPassword(t *testing.T) {
 		}
 
 		for _, tc := range edgeCases {
-			test := TestStruct{Password: tc.password}
-			err := validate.Struct(test)
-			if tc.valid {
-				assert.NoError(t, err, "Password should be valid: %s", tc.password)
-			} else {
-				assert.Error(t, err, "Password should be invalid: %s", tc.password)
-			}
+			// Use local variables to avoid closure issues
+			pwd := tc.password
+			valid := tc.valid
+			It("should correctly handle "+pwd, func() {
+				test := TestStruct{Password: pwd}
+				err := validate.Struct(test)
+				if valid {
+					Expect(err).NotTo(HaveOccurred(), "Password should be valid: "+pwd)
+				} else {
+					Expect(err).To(HaveOccurred(), "Password should be invalid: "+pwd)
+				}
+			})
 		}
 	})
-}
+})
