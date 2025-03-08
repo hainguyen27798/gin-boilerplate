@@ -4,7 +4,13 @@ import (
 	setting2 "github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"testing"
 )
+
+func TestMode(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Mode Suite")
+}
 
 var _ = Describe("TestAppMode_String", func() {
 	It("should return correct string for ProdMode", func() {

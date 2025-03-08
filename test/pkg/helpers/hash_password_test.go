@@ -2,57 +2,60 @@ package helpers
 
 import (
 	helpers2 "github.com/hainguyen27798/gin-boilerplate/pkg/helpers"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestHashPassword(t *testing.T) {
-	t.Run("should successfully hash password", func(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Hash Password Suite")
+}
+
+var _ = Describe("TestHashPassword", func() {
+	It("should successfully hash password", func() {
 		password := "mySecurePassword123"
 		hash, err := helpers2.HashPassword(password)
 
-		assert.NoError(t, err)
-		assert.NotEmpty(t, hash)
-		assert.NotEqual(t, password, hash)
+		Expect(err).ShouldNot(HaveOccurred())
+		Expect(hash).NotTo(BeEmpty())
+		Expect(hash).NotTo(Equal(password))
 	})
 
-	t.Run("should generate different hashes for same password", func(t *testing.T) {
+	It("should generate different hashes for same password", func() {
 		password := "mySecurePassword123"
 		hash1, _ := helpers2.HashPassword(password)
 		hash2, _ := helpers2.HashPassword(password)
 
-		assert.NotEqual(t, hash1, hash2)
+		Expect(hash1).NotTo(Equal(hash2))
 	})
 
-	t.Run("should handle empty password", func(t *testing.T) {
+	It("should handle empty password", func() {
 		hash, err := helpers2.HashPassword("")
 
-		assert.NoError(t, err)
-		assert.NotEmpty(t, hash)
+		Expect(err).ShouldNot(HaveOccurred())
+		Expect(hash).NotTo(BeEmpty())
 	})
-}
+})
 
-func TestCheckPasswordHash(t *testing.T) {
-	t.Run("should verify correct password", func(t *testing.T) {
+var _ = Describe("TestCheckPasswordHash", func() {
+	It("should verify correct password", func() {
 		password := "mySecurePassword123"
 		hash, _ := helpers2.HashPassword(password)
-
-		assert.True(t, helpers2.CheckPasswordHash(password, hash))
+		Expect(helpers2.CheckPasswordHash(password, hash)).To(BeTrue())
 	})
 
-	t.Run("should reject incorrect password", func(t *testing.T) {
+	It("should reject incorrect password", func() {
 		password := "mySecurePassword123"
 		hash, _ := helpers2.HashPassword(password)
-
-		assert.False(t, helpers2.CheckPasswordHash("wrongPassword", hash))
+		Expect(helpers2.CheckPasswordHash("wrongPassword", hash)).To(BeFalse())
 	})
 
-	t.Run("should handle empty password and hash", func(t *testing.T) {
-		assert.False(t, helpers2.CheckPasswordHash("", ""))
+	It("should handle empty password and hash", func() {
+		Expect(helpers2.CheckPasswordHash("", "")).To(BeFalse())
 	})
 
-	t.Run("should reject invalid hash format", func(t *testing.T) {
-		assert.False(t, helpers2.CheckPasswordHash("password", "invalidhash"))
+	It("should reject invalid hash format", func() {
+		Expect(helpers2.CheckPasswordHash("password", "invalidhash")).To(BeFalse())
 	})
-}
+})

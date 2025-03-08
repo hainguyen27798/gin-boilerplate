@@ -4,7 +4,13 @@ import (
 	setting2 "github.com/hainguyen27798/gin-boilerplate/pkg/setting"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"testing"
 )
+
+func TestConfig(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Config Suite")
+}
 
 var _ = Describe("TestConfig_Structure", func() {
 	It("should have all required fields", func() {
